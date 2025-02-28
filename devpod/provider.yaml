@@ -1,6 +1,6 @@
 name: devpod-demo-eks
 version: v0.1.2
-icon: https://devpod.sh/assets/kubernetes.svg
+icon: https://raw.githubusercontent.com/parraletz/meetup-devpod-eks/refs/heads/main/devpod/amazon-eks.svg
 home: https://github.com/parraletz/meetup-qro-2025
 description: |-
   DevPod on AWS EKS
@@ -45,7 +45,7 @@ options:
     userProvided: true
   KUBERNETES_CONFIG:
     description: The kubernetes config to use. E.g. /path/to/my/kube/config.yaml
-    default: /Users/parraletz/.kube/blueprints
+    default: /Users/aparra/.kube/blueprints
   KUBERNETES_PULL_SECRETS_ENABLED:
     description: If true, DevPod will try to use the pull secrets from the current context.
     default: "true"
@@ -85,6 +85,7 @@ options:
   STORAGE_CLASS:
     description: If defined, DevPod will use the given storage class to create the persistent volume claim. You will need to ensure the storage class exists in your cluster!
     global: true
+    default: gp2
   PVC_ACCESS_MODE:
     description: If defined, DevPod will use the given access mode to create the persistent volume claim. You will need to ensure the storage class support the given access mode!. E.g. RWO or ROX or RWX or RWOP
     global: true
@@ -100,7 +101,7 @@ options:
     global: false
     required: true
     userProvided: true
-    default: /home/aparra/workspaces/personal/meetup-qro-2025/devpod/pod.yaml
+    default: /Users/aparra/workspaces/parraletz/meetup-qro-2025/devpod/pod.yaml
   LABELS:
     description: The labels to use for the workspace pod. E.g. devpod.sh/example=value,devpod.sh/example2=value2
     global: true
@@ -112,6 +113,12 @@ options:
     description: If dockerless should be disabled. Dockerless is the way DevPod uses to build images directly within Kubernetes. If dockerless is disabled and no image is specified, DevPod will fail instead.
     global: true
     default: "false"
+  POD_TIMEOUT:
+    description: The timeout for the workspace pod. E.g. 1h, 1m, 1s
+    global: true
+    default: 1h
+  POD_RESOURCES:
+    description: The resources to use for the workspace pod. E.g. requests.cpu=2,request.memory=4
 agent:
   containerInactivityTimeout: ${INACTIVITY_TIMEOUT}
   local: true
