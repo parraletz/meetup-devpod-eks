@@ -12,7 +12,7 @@ module "vpc" {
   create_igw           = true
   enable_dns_hostnames = true
   single_nat_gateway   = true
-  
+
 
   manage_default_network_acl    = true
   default_network_acl_tags = { Name = "${local.name}-default" }
@@ -38,30 +38,58 @@ module "vpc" {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 20.24"
+  version = "20.23.0"
 
-  cluster_name    = local.name
-  cluster_version = var.cluster_version || "1.30"
-
-
-  enable_cluster_creator_admin_permissions = true
-  cluster_endpoint_public_access           = true
+  cluster_name                   = local.name
+  cluster_version                = local.cluster_version
+  cluster_endpoint_public_access = true
 
   cluster_addons = {
-    eks-pod-identity-agent = {}
-    kube-proxy = {}
-    vpc-cni = {}
-  }
+    kube-proxy = { most_recent = true }
+    coredns = { most_recent = true }
 
+    vpc-cni = {
+      most_recent    = true
+      before_compute = true
+      configuration_values = jsonencode({
+        env = {
+          ENABLE_PREFIX_DELEGATION = "true"
+          WARM_PREFIX_TARGET       = "1"
+        }
+      })
+    }
+  }
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
-  fargate_profiles = {
-    karpenter = {
-      selectors = [
-        { namespace = "karpenter" }
+  create_cloudwatch_log_group              = false
+  create_cluster_security_group            = false
+  create_node_security_group               = false
+  authentication_mode                      = "API_AND_CONFIG_MAP"
+  enable_cluster_creator_admin_permissions = true
+
+  eks_managed_node_groups = {
+    mg_5 = {
+      node_group_name = "managed-ondemand"
+      instance_types = [
+        "m4.large", "m5.large", "m5a.large", "m5ad.large", "m5d.large", "t2.large", "t3.large", "t3a.large"
       ]
+
+      create_security_group = false
+
+      subnet_ids   = module.vpc.private_subnets
+      max_size     = 2
+      desired_size = 2
+      min_size = 2
+
+      # Launch template configuration
+      create_launch_template = true              # false will use the default launch template
+      launch_template_os = "bottlerocket"
+
+      labels = {
+        intent = "control-apps"
+      }
     }
   }
 
@@ -69,3 +97,7 @@ module "eks" {
     "karpenter.sh/discovery" = local.name
   })
 }
+
+
+
+
