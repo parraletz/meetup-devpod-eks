@@ -10,7 +10,7 @@ module "eks_blueprints_addons" {
   create_delay_dependencies = [for prof in module.eks.eks_managed_node_groups : prof.node_group_arn]
 
   enable_aws_load_balancer_controller = false
-  enable_metrics_server               = true
+  enable_metrics_server               = false
 
   eks_addons = {
     aws-ebs-csi-driver = {
@@ -28,7 +28,7 @@ module "eks_blueprints_addons" {
     ]
   }
 
-  enable_karpenter = true
+  enable_karpenter = false
 
   karpenter = {
     chart_version       = "1.2.0"

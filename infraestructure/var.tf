@@ -24,7 +24,7 @@ variable "eks_admin_role_name" {
 }
 
 variable "cluster_version" {
-  default = "1.30"
+  default = "1.32"
 }
 
 variable "region" {

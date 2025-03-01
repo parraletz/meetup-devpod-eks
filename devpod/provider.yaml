@@ -41,7 +41,7 @@ options:
     global: true
   KUBERNETES_CONTEXT:
     description: The kubernetes context to use. E.g. my-kube-context
-    default: arn:aws:eks:us-east-1:637423657996:cluster/eks_blueprints
+    default: arn:aws:eks:us-east-1:471112526972:cluster/eks_blueprints
     userProvided: true
   KUBERNETES_CONFIG:
     description: The kubernetes config to use. E.g. /path/to/my/kube/config.yaml
@@ -84,11 +84,11 @@ options:
     description: "If defined, will automatically stop the pod after the inactivity period. Examples: 10m, 1h"
   STORAGE_CLASS:
     description: If defined, DevPod will use the given storage class to create the persistent volume claim. You will need to ensure the storage class exists in your cluster!
-    global: true
+    global: false
     default: gp2
   PVC_ACCESS_MODE:
     description: If defined, DevPod will use the given access mode to create the persistent volume claim. You will need to ensure the storage class support the given access mode!. E.g. RWO or ROX or RWX or RWOP
-    global: true
+    global: false
   NODE_SELECTOR:
     description: The node selector to use for the workspace pod. E.g. my-label=value,my-label-2=value-2
     global: true

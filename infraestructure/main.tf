@@ -73,19 +73,19 @@ module "eks" {
     mg_5 = {
       node_group_name = "managed-ondemand"
       instance_types = [
-        "m4.large", "m5.large", "m5a.large", "m5ad.large", "m5d.large", "t2.large", "t3.large", "t3a.large"
+        "m7i.2xlarge", "m7i.4xlarge", "m7i.8xlarge"
       ]
 
       create_security_group = false
 
       subnet_ids   = module.vpc.private_subnets
-      max_size     = 2
-      desired_size = 2
-      min_size = 2
+      max_size     = 5
+      desired_size = 4
+      min_size = 4
 
       # Launch template configuration
       create_launch_template = true              # false will use the default launch template
-      launch_template_os = "bottlerocket"
+      launch_template_os = "amazonlinux2eks"
 
       labels = {
         intent = "control-apps"
